@@ -1,5 +1,6 @@
 {
     "preset": "google",
+    "excludeFiles": ["coverage", "node_modules"],
     "disallowKeywords": ["with"],
     "disallowMultipleLineBreaks": null,
     "disallowMultipleVarDecl": null,

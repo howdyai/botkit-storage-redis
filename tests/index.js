@@ -59,13 +59,13 @@ describe('Redis', function() {
         });
 
         it('should create custom storage methods', function() {
-            var storage = Storage({methods:['walterwhite', 'heisenberg']});
+            var storage = Storage({methods: ['walterwhite', 'heisenberg']});
             storage.should.have.property('walterwhite');
             storage.should.have.property('heisenberg');
         });
     });
 
-    ['teams', 'users', 'channels'].forEach(function (method) {
+    ['teams', 'users', 'channels'].forEach(function(method) {
         describe(method, function() {
             var storageInterface
                 , hash;
@@ -124,11 +124,37 @@ describe('Redis', function() {
             describe('save', function() {
 
                 beforeEach(function() {
-
+                    sinon.spy(JSON, 'stringify');
                 });
 
-                it('should ', function() {
+                afterEach(function() {
+                    JSON.stringify.restore();
+                });
 
+                it('should throw an error if ID is not provided', function() {
+                    var obj = {}
+                        , cb = sinon.stub();
+
+                    storageInterface[method].save(obj, cb);
+
+                    cb.firstCall.args[0].should.be.an.Error;
+                    cb.firstCall.args[1].should.match({});
+                });
+
+                it('should save to redis', function() {
+                    var obj = {id: 'heisenberg'}
+                        , cb = sinon.stub();
+
+                    storageInterface[method].save(obj, cb);
+
+                    JSON.stringify.should.be.calledWith(obj);
+
+                    redisClientMock.hset.should.be.calledWith(
+                        defaultNamespace + ':' + method,
+                        'heisenberg',
+                        '{"id":"heisenberg"}',
+                        cb
+                    );
                 });
             });
 
@@ -156,7 +182,7 @@ describe('Redis', function() {
                 it('should delegate to all', function() {
                     var cb = sinon.stub();
                     storageInterface[method].allById(cb);
-                    storageInterface[method].all.should.be.calledWith(cb, {type:'object'});
+                    storageInterface[method].all.should.be.calledWith(cb, {type: 'object'});
                 });
             });
         });
