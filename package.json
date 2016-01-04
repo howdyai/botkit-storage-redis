@@ -1,0 +1,31 @@
+{
+  "name": "botkit-storage-redis",
+  "version": "1.0.0",
+  "description": "A Redis storage driver for Botkit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/howdyai/botkit-storage-redis.git"
+  },
+  "keywords": [
+    "botkit",
+    "redis",
+    "slack"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/howdyai/botkit-storage-redis/issues"
+  },
+  "homepage": "https://github.com/howdyai/botkit-storage-redis#readme",
+  "dependencies": {
+    "redis": "^2.4.2"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.4",
+    "should": "^8.0.2"
+  }
+}
