@@ -146,11 +146,17 @@ describe('Redis', function() {
             describe('allById', function() {
 
                 beforeEach(function() {
-
+                    sinon.spy(storageInterface[method], 'all');
                 });
 
-                it('should ', function() {
+                afterEach(function() {
+                    storageInterface[method].all.restore();
+                });
 
+                it('should delegate to all', function() {
+                    var cb = sinon.stub();
+                    storageInterface[method].allById(cb);
+                    storageInterface[method].all.should.be.calledWith(cb, {type:'object'});
                 });
             });
         });
