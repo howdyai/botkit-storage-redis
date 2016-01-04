@@ -53,8 +53,8 @@ function getStorageObj(hash, client, config) {
                     return cb(err, res);
                 }
 
-                var parsed
-                  , array = [];
+                var parsed,
+                    array = [];
 
                 for (var i in res) {
                     parsed = JSON.parse(res[i]);

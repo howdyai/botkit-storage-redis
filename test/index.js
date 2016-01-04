@@ -1,14 +1,12 @@
-var should = require('should')
-    , sinon = require('sinon')
-    , proxyquire = require('proxyquire').noCallThru();
+var should = require('should'), sinon = require('sinon'), proxyquire = require('proxyquire').noCallThru();
 
 require('should-sinon');
 
 describe('Redis', function() {
-    var Storage
-        , redisMock
-        , redisClientMock
-        , defaultNamespace;
+    var Storage,
+        redisMock,
+        redisClientMock,
+        defaultNamespace;
 
     beforeEach(function() {
         defaultNamespace = 'botkit:store';
@@ -67,8 +65,7 @@ describe('Redis', function() {
 
     ['teams', 'users', 'channels'].forEach(function(method) {
         describe(method, function() {
-            var storageInterface
-                , hash;
+            var storageInterface, hash;
 
             beforeEach(function() {
                 storageInterface = Storage();
@@ -86,8 +83,8 @@ describe('Redis', function() {
                 });
 
                 it('should get by ID', function() {
-                    var result = '{}'
-                        , cb = sinon.stub();
+                    var result = '{}',
+                        cb = sinon.stub();
 
                     redisClientMock.hget.yields(null, result);
 
@@ -111,8 +108,7 @@ describe('Redis', function() {
                 });
 
                 it('should call the callback with an error if redis fails', function() {
-                    var cb = sinon.stub()
-                        , err = new Error('OOPS!');
+                    var cb = sinon.stub(), err = new Error('OOPS!');
 
                     redisClientMock.hget.yields(err);
 
@@ -135,8 +131,8 @@ describe('Redis', function() {
                 });
 
                 it('should throw an error if ID is not provided', function() {
-                    var obj = {}
-                        , cb = sinon.stub();
+                    var obj = {},
+                        cb = sinon.stub();
 
                     storageInterface[method].save(obj, cb);
 
@@ -145,8 +141,7 @@ describe('Redis', function() {
                 });
 
                 it('should save to redis', function() {
-                    var obj = {id: 'heisenberg'}
-                        , cb = sinon.stub();
+                    var obj = {id: 'heisenberg'}, cb = sinon.stub();
 
                     storageInterface[method].save(obj, cb);
 
@@ -165,7 +160,6 @@ describe('Redis', function() {
 
                 beforeEach(function() {
                     sinon.spy(JSON, 'parse');
-                    //sinon.spy(JSON, 'parse');
                 });
 
                 afterEach(function() {
@@ -173,8 +167,8 @@ describe('Redis', function() {
                 });
 
                 it('should call callback with error if redis fails', function() {
-                    var cb = sinon.stub()
-                        , err = new Error('OOPS!');
+                    var cb = sinon.stub(),
+                        err = new Error('OOPS!');
 
                     redisClientMock.hgetall.yields(err);
 
@@ -196,8 +190,8 @@ describe('Redis', function() {
                 });
 
                 it('should return an array by default', function() {
-                    var cb = sinon.stub()
-                        , result = ['{"walterwhite":"heisenberg"}', '{"jessepinkman":"capncook"}'];
+                    var cb = sinon.stub(),
+                        result = ['{"walterwhite":"heisenberg"}', '{"jessepinkman":"capncook"}'];
 
                     redisClientMock.hgetall.yields(null, result);
 
@@ -209,8 +203,8 @@ describe('Redis', function() {
                 });
 
                 it('should return an object if specified in options', function() {
-                    var cb = sinon.stub()
-                        , result = {key1: '{"walterwhite":"heisenberg"}', key2: '{"jessepinkman":"capncook"}'};
+                    var cb = sinon.stub(),
+                        result = {key1: '{"walterwhite":"heisenberg"}', key2: '{"jessepinkman":"capncook"}'};
 
                     redisClientMock.hgetall.yields(null, result);
 
@@ -225,8 +219,8 @@ describe('Redis', function() {
                 });
 
                 it('should return an array if something other than object is specified in options', function() {
-                    var cb = sinon.stub()
-                        , result = ['{"walterwhite":"heisenberg"}', '{"jessepinkman":"capncook"}'];
+                    var cb = sinon.stub(),
+                        result = ['{"walterwhite":"heisenberg"}', '{"jessepinkman":"capncook"}'];
 
                     redisClientMock.hgetall.yields(null, result);
 
