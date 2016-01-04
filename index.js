@@ -1,17 +1,16 @@
 // copied from https://github.com/howdyai/botkit version 0.0.5, original authors: @RafaelCosman and @guillaumepotier
 
-var redis = require('redis'); // https://github.com/NodeRedis/node_redis
+var redis = require('redis');
 
-/*
- * All optional
+/**
+ * botkit-storage-redis - Redis driver for Botkit
  *
- * config = {
- *  namespace: namespace,
- *  host: host,
- *  port: port
- * }
- * // for a full list of the valid options, see
- * https://github.com/NodeRedis/node_redis#options-is-an-object-with-the-following-possible-properties
+ * @param  {Object} config (optional) For full list of valid redis options, see
+ *  https://github.com/NodeRedis/node_redis#options-is-an-object-with-the-following-possible-properties
+ * @property config.namespace {String} The namespace to use when storing entities. Defaults to 'botkit:store'
+ * @property config.methods {Array} An array of strings for the methods to export.
+ *  Defaults to ['teams', 'users', 'channels']
+ * @return {Object} Storage interface for Botkit
  */
 module.exports = function(config) {
     config = config || {};
@@ -23,28 +22,35 @@ module.exports = function(config) {
 
     // Implements required API methods
     for (var i = 0; i < methods.length; i++) {
-        storage[methods[i]] = getStorageObj(methods[i], client, config);
+        storage[methods[i]] = getStorageObj(config.namespace + ':' + methods[i], client);
     }
 
     return storage;
 };
 
-function getStorageObj(hash, client, config) {
+/**
+ * Function to generate a storage object for a given namespace
+ *
+ * @param {String} namespace The namespace to use for storing in Redis
+ * @param {Object} client The redis client
+ * @returns {{get: get, save: save, all: all, allById: allById}}
+ */
+function getStorageObj(namespace, client) {
     return {
         get: function(id, cb) {
-            client.hget(config.namespace + ':' + hash, id, function(err, res) {
+            client.hget(namespace, id, function(err, res) {
                 cb(err, res ? JSON.parse(res) : {});
             });
         },
         save: function(object, cb) {
-            if (!object.id) {// Silently catch this error?
+            if (!object.id) {
                 return cb(new Error('The given object must have an id property'), {});
             }
 
-            client.hset(config.namespace + ':' + hash, object.id, JSON.stringify(object), cb);
+            client.hset(namespace, object.id, JSON.stringify(object), cb);
         },
         all: function(cb, options) {
-            client.hgetall(config.namespace + ':' + hash, function(err, res) {
+            client.hgetall(namespace, function(err, res) {
                 if (err) {
                     return cb(err, {});
                 }
