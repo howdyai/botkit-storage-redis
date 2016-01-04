@@ -205,7 +205,7 @@ describe('Redis', function() {
 
                     redisClientMock.hgetall.should.be.calledWithMatch(hash);
                     JSON.parse.should.be.calledTwice;
-                    cb.should.be.calledWithMatch(null, [{'walterwhite':'heisenberg'}, {'jessepinkman':'capncook'}]);
+                    cb.should.be.calledWithMatch(null, [{'walterwhite': 'heisenberg'}, {'jessepinkman': 'capncook'}]);
                 });
 
                 it('should return an object if specified in options', function() {
@@ -218,7 +218,10 @@ describe('Redis', function() {
 
                     redisClientMock.hgetall.should.be.calledWithMatch(hash);
                     JSON.parse.should.be.calledTwice;
-                    cb.should.be.calledWithMatch(null, {key1: {'walterwhite':'heisenberg'}, key2: {'jessepinkman':'capncook'}});
+                    cb.should.be.calledWithMatch(
+                        null,
+                        {key1: {'walterwhite': 'heisenberg'}, key2: {'jessepinkman': 'capncook'}}
+                    );
                 });
 
                 it('should return an array if something other than object is specified in options', function() {
@@ -231,7 +234,7 @@ describe('Redis', function() {
 
                     redisClientMock.hgetall.should.be.calledWithMatch(hash);
                     JSON.parse.should.be.calledTwice;
-                    cb.should.be.calledWithMatch(null, [{'walterwhite':'heisenberg'}, {'jessepinkman':'capncook'}]);
+                    cb.should.be.calledWithMatch(null, [{'walterwhite': 'heisenberg'}, {'jessepinkman': 'capncook'}]);
                 });
             });
 
