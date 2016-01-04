@@ -7,9 +7,12 @@ require('should-sinon');
 describe('Redis', function() {
     var Storage
         , redisMock
-        , redisClientMock;
+        , redisClientMock
+        , defaultNamespace;
 
     beforeEach(function() {
+        defaultNamespace = 'botkit:store';
+
         redisClientMock = {
             hget: sinon.stub(),
             hset: sinon.stub(),
@@ -24,11 +27,6 @@ describe('Redis', function() {
     });
 
     describe('initialization', function() {
-        var defaultNamespace;
-
-        beforeEach(function() {
-            defaultNamespace = 'botkit:store';
-        });
 
         it('should initialize redis with the config', function() {
             var config = {};
@@ -52,49 +50,109 @@ describe('Redis', function() {
             Storage();
             redisMock.createClient.should.be.calledWith({namespace: defaultNamespace});
         });
-    });
 
-    describe('teams', function() {
-
-        beforeEach(function() {
-
+        it('should have default storage methods', function() {
+            var storage = Storage();
+            storage.should.have.property('teams');
+            storage.should.have.property('users');
+            storage.should.have.property('channels');
         });
 
-        it('should ', function() {
-
-        });
-    });
-
-    describe('users', function() {
-
-        beforeEach(function() {
-
-        });
-
-        it('should ', function() {
-
+        it('should create custom storage methods', function() {
+            var storage = Storage({methods:['walterwhite', 'heisenberg']});
+            storage.should.have.property('walterwhite');
+            storage.should.have.property('heisenberg');
         });
     });
 
-    describe('channels', function() {
+    ['teams', 'users', 'channels'].forEach(function (method) {
+        describe(method, function() {
+            var storageInterface
+                , hash;
 
-        beforeEach(function() {
+            beforeEach(function() {
+                storageInterface = Storage();
+                hash = defaultNamespace + ':' + method;
+                sinon.spy(JSON, 'parse');
+            });
 
-        });
+            afterEach(function() {
+                JSON.parse.restore();
+            });
 
-        it('should ', function() {
+            describe('get', function() {
 
-        });
-    });
+                it('should get by ID', function() {
+                    var result = '{}'
+                        , cb = sinon.stub();
 
-    describe('custom', function() {
+                    redisClientMock.hget.yields(null, result);
 
-        beforeEach(function() {
+                    storageInterface[method].get('walterwhite', cb);
 
-        });
+                    redisClientMock.hget.should.be.calledWithMatch(hash, 'walterwhite');
+                    JSON.parse.should.be.calledWith(result);
+                    cb.should.be.calledWith(null, {});
+                });
 
-        it('should ', function() {
+                it('should handle falsy result', function() {
+                    var cb = sinon.stub();
 
+                    redisClientMock.hget.yields(null, '');
+
+                    storageInterface[method].get('walterwhite', cb);
+
+                    redisClientMock.hget.should.be.calledWithMatch(hash, 'walterwhite');
+                    JSON.parse.should.not.be.called;
+                    cb.should.be.calledWith(null, {});
+                });
+
+                it('should call the callback with an error if redis fails', function() {
+                    var cb = sinon.stub()
+                        , err = new Error('OOPS!');
+
+                    redisClientMock.hget.yields(err);
+
+                    storageInterface[method].get('walterwhite', cb);
+
+                    redisClientMock.hget.should.be.calledWithMatch(hash, 'walterwhite');
+                    JSON.parse.should.not.be.called;
+                    cb.should.be.calledWith(err, {});
+                });
+            });
+
+            describe('save', function() {
+
+                beforeEach(function() {
+
+                });
+
+                it('should ', function() {
+
+                });
+            });
+
+            describe('all', function() {
+
+                beforeEach(function() {
+
+                });
+
+                it('should ', function() {
+
+                });
+            });
+
+            describe('allById', function() {
+
+                beforeEach(function() {
+
+                });
+
+                it('should ', function() {
+
+                });
+            });
         });
     });
 });

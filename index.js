@@ -32,7 +32,7 @@ function getStorageObj(hash, client, config) {
     return {
         get: function(id, cb) {
             client.hget(config.namespace + ':' + hash, id, function(err, res) {
-                cb(err, JSON.parse(res));
+                cb(err, res ? JSON.parse(res) : {});
             });
         },
         save: function(object, cb) {
