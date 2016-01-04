@@ -10,7 +10,8 @@ var redis = require('redis'); // https://github.com/NodeRedis/node_redis
  *  host: host,
  *  port: port
  * }
- * // see https://github.com/NodeRedis/node_redis#options-is-an-object-with-the-following-possible-properties for a full list of the valid options
+ * // for a full list of the valid options, see
+ * https://github.com/NodeRedis/node_redis#options-is-an-object-with-the-following-possible-properties
  */
 module.exports = function(config) {
     config = config || {};
@@ -37,17 +38,10 @@ function getStorageObj(hash, client, config) {
         },
         save: function(object, cb) {
             if (!object.id) {// Silently catch this error?
-                return cb(
-                    new Error('The given object must have an id property'), {}
-                );
+                return cb(new Error('The given object must have an id property'), {});
             }
 
-            client.hset(
-                config.namespace + ':' + hash,
-                object.id,
-                JSON.stringify(object),
-                cb
-            );
+            client.hset(config.namespace + ':' + hash, object.id, JSON.stringify(object), cb);
         },
         all: function(cb, options) {
             client.hgetall(config.namespace + ':' + hash, function(err, res) {
