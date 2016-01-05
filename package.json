@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "jscs ./ && istanbul cover --report lcov --dir coverage/ _mocha ./tests --grep ./tests/*.js -- --colors",
-    "lint": "jscs ./"
+    "pretest": "jscs ./",
+    "test": "istanbul cover --report lcov --dir coverage/ _mocha ./tests --grep ./tests/*.js -- --colors"
   },
   "repository": {
     "type": "git",

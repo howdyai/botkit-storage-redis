@@ -15,8 +15,8 @@ module.exports = function(config) {
     config.namespace = config.namespace || 'botkit:store';
 
     var storage = {},
-      client = redis.createClient(config), // could pass specific redis config here
-      methods = ['teams', 'users', 'channels'];
+        client = redis.createClient(config), // could pass specific redis config here
+        methods = ['teams', 'users', 'channels'];
 
     // Implements required API methods
     for (var i = 0; i < methods.length; i++) {
