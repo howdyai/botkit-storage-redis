@@ -22,7 +22,7 @@ module.exports = function(config) {
 
     // Implements required API methods
     for (var i = 0; i < methods.length; i++) {
-        storage[methods[i]] = getStorageObj(config.namespace + ':' + methods[i], client);
+        storage[methods[i]] = getStorageObj(client, config.namespace + ':' + methods[i]);
     }
 
     return storage;
@@ -31,11 +31,11 @@ module.exports = function(config) {
 /**
  * Function to generate a storage object for a given namespace
  *
- * @param {String} namespace The namespace to use for storing in Redis
  * @param {Object} client The redis client
+ * @param {String} namespace The namespace to use for storing in Redis
  * @returns {{get: get, save: save, all: all, allById: allById}}
  */
-function getStorageObj(namespace, client) {
+function getStorageObj(client, namespace) {
     return {
         get: function(id, cb) {
             client.hget(namespace, id, function(err, res) {
