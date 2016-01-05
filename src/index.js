@@ -50,7 +50,7 @@ function getStorageObj(client, namespace) {
         all: function(cb, options) {
             client.hgetall(namespace, function(err, res) {
                 if (err) {
-                    return cb(err, {});
+                    return cb(err);
                 }
 
                 var parsed,

@@ -162,7 +162,7 @@ describe('Redis', function() {
                     storageInterface[method].all(cb);
 
                     redisClientMock.hgetall.should.be.calledWithMatch(hash);
-                    cb.should.be.calledWithMatch(err, {});
+                    cb.should.be.calledWith(err);
                 });
 
                 it('should return an array by default', function() {
