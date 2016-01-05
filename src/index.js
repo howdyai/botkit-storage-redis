@@ -68,9 +68,6 @@ function getStorageObj(client, namespace) {
 
                 cb(err, options && options.type === 'object' ? res : array);
             });
-        },
-        allById: function(cb) {
-            this.all(cb, {type: 'object'});
         }
     };
 }
