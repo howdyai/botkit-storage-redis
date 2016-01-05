@@ -165,17 +165,6 @@ describe('Redis', function() {
                     cb.should.be.calledWithMatch(err, {});
                 });
 
-                it('should call callback with null if result is null', function() {
-                    var cb = sinon.stub();
-
-                    redisClientMock.hgetall.yields(null, null);
-
-                    storageInterface[method].all(cb);
-
-                    redisClientMock.hgetall.should.be.calledWithMatch(hash);
-                    cb.should.be.calledWithMatch(null, null);
-                });
-
                 it('should return an array by default', function() {
                     var cb = sinon.stub(),
                         result = ['{"walterwhite":"heisenberg"}', '{"jessepinkman":"capncook"}'];

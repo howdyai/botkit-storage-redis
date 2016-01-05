@@ -53,10 +53,6 @@ function getStorageObj(client, namespace) {
                     return cb(err, {});
                 }
 
-                if (res === null) {
-                    return cb(err, res);
-                }
-
                 var parsed,
                     array = [];
 
@@ -66,7 +62,7 @@ function getStorageObj(client, namespace) {
                     array.push(parsed);
                 }
 
-                cb(err, options && options.type === 'object' ? res : array);
+                cb(null, options && options.type === 'object' ? res : array);
             });
         }
     };
