@@ -8,8 +8,6 @@ var redis = require('redis');
  * @param  {Object} config (optional) For full list of valid redis options, see
  *  https://github.com/NodeRedis/node_redis#options-is-an-object-with-the-following-possible-properties
  * @property config.namespace {String} The namespace to use when storing entities. Defaults to 'botkit:store'
- * @property config.methods {Array} An array of strings for the methods to export.
- *  Defaults to ['teams', 'users', 'channels']
  * @return {Object} Storage interface for Botkit
  */
 module.exports = function(config) {
@@ -18,7 +16,7 @@ module.exports = function(config) {
 
     var storage = {},
       client = redis.createClient(config), // could pass specific redis config here
-      methods = config.methods || ['teams', 'users', 'channels'];
+      methods = ['teams', 'users', 'channels'];
 
     // Implements required API methods
     for (var i = 0; i < methods.length; i++) {

@@ -21,7 +21,7 @@ describe('Redis', function() {
             createClient: sinon.stub().returns(redisClientMock)
         };
 
-        Storage = proxyquire('../index', {'redis': redisMock});
+        Storage = proxyquire('../src/index', {'redis': redisMock});
     });
 
     describe('initialization', function() {
@@ -47,19 +47,6 @@ describe('Redis', function() {
         it('should create a default config', function() {
             Storage();
             redisMock.createClient.should.be.calledWith({namespace: defaultNamespace});
-        });
-
-        it('should have default storage methods', function() {
-            var storage = Storage();
-            storage.should.have.property('teams');
-            storage.should.have.property('users');
-            storage.should.have.property('channels');
-        });
-
-        it('should create custom storage methods', function() {
-            var storage = Storage({methods: ['walterwhite', 'heisenberg']});
-            storage.should.have.property('walterwhite');
-            storage.should.have.property('heisenberg');
         });
     });
 
