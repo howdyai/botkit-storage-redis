@@ -91,7 +91,7 @@ describe('Redis', function() {
 
                     redisClientMock.hget.should.be.calledWithMatch(hash, 'walterwhite');
                     JSON.parse.should.not.be.called;
-                    cb.should.be.calledWith(null, {});
+                    cb.should.be.calledWith(null, null);
                 });
 
                 it('should call the callback with an error if redis fails', function() {
@@ -103,7 +103,7 @@ describe('Redis', function() {
 
                     redisClientMock.hget.should.be.calledWithMatch(hash, 'walterwhite');
                     JSON.parse.should.not.be.called;
-                    cb.should.be.calledWith(err, {});
+                    cb.should.be.calledWith(err, null);
                 });
             });
 
