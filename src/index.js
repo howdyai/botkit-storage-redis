@@ -37,7 +37,7 @@ function getStorageObj(client, namespace) {
     return {
         get: function(id, cb) {
             client.hget(namespace, id, function(err, res) {
-                cb(err, res ? JSON.parse(res) : {});
+                cb(err, res ? JSON.parse(res) : null);
             });
         },
         save: function(object, cb) {
