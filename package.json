@@ -1,6 +1,6 @@
 {
   "name": "botkit-storage-redis",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Redis storage driver for Botkit",
   "main": "index.js",
   "scripts": {
