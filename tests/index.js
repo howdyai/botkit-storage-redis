@@ -14,7 +14,8 @@ describe('Redis', function() {
         redisClientMock = {
             hget: sinon.stub(),
             hset: sinon.stub(),
-            hgetall: sinon.stub()
+            hdel: sinon.stub(),
+            hgetall: sinon.stub(),
         };
 
         redisMock = {
@@ -142,6 +143,30 @@ describe('Redis', function() {
                     );
                 });
             });
+
+            describe('remove', function() {
+
+                beforeEach(function() {
+                    sinon.spy(JSON, 'stringify');
+                });
+
+                afterEach(function() {
+                    JSON.stringify.restore();
+                });
+
+                it('should remove from redis', function() {
+                    var id = 'heisenberg', cb = sinon.stub();
+
+                    storageInterface[method].remove(id, cb);
+
+                    redisClientMock.hdel.should.be.calledWith(
+                        defaultNamespace + ':' + method,
+                        ['heisenberg'],
+                        cb
+                    );
+                });
+            });
+
 
             describe('all', function() {
 

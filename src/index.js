@@ -47,6 +47,9 @@ function getStorageObj(client, namespace) {
 
             client.hset(namespace, object.id, JSON.stringify(object), cb);
         },
+        remove: function(id, cb) {
+            client.hdel(namespace, [id], cb);
+        },
         all: function(cb, options) {
             client.hgetall(namespace, function(err, res) {
                 if (err) {
