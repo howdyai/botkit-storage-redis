@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "istanbul": "^0.4.1",
+    "jscs": "^2.8.0",
     "mocha": "^2.3.4",
     "proxyquire": "^1.7.3",
     "should": "^8.0.2",
