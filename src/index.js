@@ -13,7 +13,7 @@ var redis = require('redis');
 module.exports = function(config) {
     config = config || {};
     config.namespace = config.namespace || 'botkit:store';
-    config.methods = [] || config.methods;
+    config.methods = config.methods || [];
 
     var storage = {},
         client = redis.createClient(config), // could pass specific redis config here
