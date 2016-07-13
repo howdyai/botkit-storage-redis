@@ -30,3 +30,5 @@ beans = controller.storage.teams.get('cool');
 You can pass any options that are allowed by [node-redis](https://github.com/NodeRedis/node_redis).
 
 Additionally you can pass a `namespace` property which is used to namespace keys in Redis. `namespace` defaults to `botkit:store`.
+
+You can also pass a `methods` property which is an array of additional custom methods you want to add. The default methods are `teams`, `users`, and `channels`.
