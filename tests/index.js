@@ -47,7 +47,8 @@ describe('Redis', function() {
 
         it('should create a default config', function() {
             Storage();
-            redisMock.createClient.should.be.calledWith({namespace: defaultNamespace});
+            redisMock.createClient.should.be.calledWith({namespace: defaultNamespace,
+                            methods: []});
         });
     });
 
