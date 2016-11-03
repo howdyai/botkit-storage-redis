@@ -47,6 +47,8 @@ function getStorageObj(client, namespace) {
             }
 
             client.hset(namespace, object.id, JSON.stringify(object), cb);
+            if (object.expire) {
+                client.EXPIRE(object.id, parseInt(object.expire))
         },
         remove: function(id, cb) {
             client.hdel(namespace, [id], cb);
