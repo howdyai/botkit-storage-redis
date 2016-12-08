@@ -34,6 +34,13 @@ module.exports = function(config) {
  * @param {String} namespace The namespace to use for storing in Redis
  * @returns {{get: get, save: save, all: all, allById: allById}}
  */
+function isInt(n) {
+    if (isNaN(n) | n === 0) {
+        return false;
+    }
+    return (typeof x === 'number') && ( x % 1 === 0);
+}
+
 function getStorageObj(client, namespace) {
     return {
         get: function(id, cb) {
@@ -47,8 +54,15 @@ function getStorageObj(client, namespace) {
             }
 
             client.hset(namespace, object.id, JSON.stringify(object), cb);
+
             if (object.expire) {
-                client.EXPIRE(object.id, parseInt(object.expire))
+                // check for integer
+                if (isInt(object.expire)) {
+                    return cb(new Error('The \"expire\" property must be a positive integer', {}));
+                } else {
+                    client.EXPIRE(object.id, parseInt(object.expire));
+                }
+            }
         },
         remove: function(id, cb) {
             client.hdel(namespace, [id], cb);
