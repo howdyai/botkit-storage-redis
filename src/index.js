@@ -57,7 +57,7 @@ function getStorageObj(client, namespace) {
 
             if (object.expire) {
                 // check for integer
-                if (isInt(object.expire)) {
+                if (!isInt(object.expire)) {
                     return cb(new Error('The \"expire\" property must be a positive integer', {}));
                 } else {
                     client.EXPIRE(object.id, parseInt(object.expire));
