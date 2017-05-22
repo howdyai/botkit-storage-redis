@@ -35,6 +35,9 @@ module.exports = function(config) {
  * @returns {{get: get, save: save, all: all, allById: allById}}
  */
 function getStorageObj(client, namespace) {
+    var delete = function(id, cb) {
+        client.hdel(namespace, [id], cb);
+    };
     return {
         get: function(id, cb) {
             client.hget(namespace, id, function(err, res) {
@@ -48,8 +51,12 @@ function getStorageObj(client, namespace) {
 
             client.hset(namespace, object.id, JSON.stringify(object), cb);
         },
+        //remove is a non-standard name, but for compatbility included here
+        remove: function(id, cb) {
+            return delete(id, cb);
+        },
         delete: function(id, cb) {
-            client.hdel(namespace, [id], cb);
+            return delete(id, cb);
         },
         all: function(cb, options) {
             client.hgetall(namespace, function(err, res) {
