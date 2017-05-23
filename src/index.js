@@ -35,7 +35,7 @@ module.exports = function(config) {
  * @returns {{get: get, save: save, all: all, allById: allById}}
  */
 function getStorageObj(client, namespace) {
-    var delete = function(id, cb) {
+    function delete(id, cb) {
         client.hdel(namespace, [id], cb);
     };
     return {
