@@ -1,12 +1,11 @@
-var should = require('should'), sinon = require('sinon'), proxyquire = require('proxyquire').noCallThru();
+var should = require('should'),
+    sinon = require('sinon'),
+    proxyquire = require('proxyquire').noCallThru();
 
 require('should-sinon');
 
 describe('Redis', function() {
-    var Storage,
-        redisMock,
-        redisClientMock,
-        defaultNamespace;
+    var Storage, redisMock, redisClientMock, defaultNamespace;
 
     beforeEach(function() {
         defaultNamespace = 'botkit:store';
@@ -15,18 +14,17 @@ describe('Redis', function() {
             hget: sinon.stub(),
             hset: sinon.stub(),
             hdel: sinon.stub(),
-            hgetall: sinon.stub(),
+            hgetall: sinon.stub()
         };
 
         redisMock = {
             createClient: sinon.stub().returns(redisClientMock)
         };
 
-        Storage = proxyquire('../src/index', {'redis': redisMock});
+        Storage = proxyquire('../src/index', { redis: redisMock });
     });
 
     describe('initialization', function() {
-
         it('should initialize redis with the config', function() {
             var config = {};
             Storage(config);
@@ -34,7 +32,7 @@ describe('Redis', function() {
         });
 
         it('should set a custom namespace', function() {
-            var config = {namespace: 'custom'};
+            var config = { namespace: 'custom' };
             Storage(config);
             config.should.have.property('namespace', 'custom');
         });
@@ -47,8 +45,10 @@ describe('Redis', function() {
 
         it('should create a default config', function() {
             Storage();
-            redisMock.createClient.should.be.calledWith({namespace: defaultNamespace,
-                            methods: []});
+            redisMock.createClient.should.be.calledWith({
+                namespace: defaultNamespace,
+                methods: []
+            });
         });
     });
 
@@ -62,7 +62,6 @@ describe('Redis', function() {
             });
 
             describe('get', function() {
-
                 beforeEach(function() {
                     sinon.spy(JSON, 'parse');
                 });
@@ -72,14 +71,16 @@ describe('Redis', function() {
                 });
 
                 it('should get by ID', function() {
-                    var result = '{}',
-                        cb = sinon.stub();
+                    var result = '{}', cb = sinon.stub();
 
                     redisClientMock.hget.yields(null, result);
 
                     storageInterface[method].get('walterwhite', cb);
 
-                    redisClientMock.hget.should.be.calledWithMatch(hash, 'walterwhite');
+                    redisClientMock.hget.should.be.calledWithMatch(
+                        hash,
+                        'walterwhite'
+                    );
                     JSON.parse.should.be.calledWith(result);
                     cb.should.be.calledWith(null, {});
                 });
@@ -91,7 +92,10 @@ describe('Redis', function() {
 
                     storageInterface[method].get('walterwhite', cb);
 
-                    redisClientMock.hget.should.be.calledWithMatch(hash, 'walterwhite');
+                    redisClientMock.hget.should.be.calledWithMatch(
+                        hash,
+                        'walterwhite'
+                    );
                     JSON.parse.should.not.be.called;
                     cb.should.be.calledWith(null, null);
                 });
@@ -103,14 +107,16 @@ describe('Redis', function() {
 
                     storageInterface[method].get('walterwhite', cb);
 
-                    redisClientMock.hget.should.be.calledWithMatch(hash, 'walterwhite');
+                    redisClientMock.hget.should.be.calledWithMatch(
+                        hash,
+                        'walterwhite'
+                    );
                     JSON.parse.should.not.be.called;
                     cb.should.be.calledWith(err, null);
                 });
             });
 
             describe('save', function() {
-
                 beforeEach(function() {
                     sinon.spy(JSON, 'stringify');
                 });
@@ -120,8 +126,7 @@ describe('Redis', function() {
                 });
 
                 it('should throw an error if ID is not provided', function() {
-                    var obj = {},
-                        cb = sinon.stub();
+                    var obj = {}, cb = sinon.stub();
 
                     storageInterface[method].save(obj, cb);
 
@@ -130,7 +135,7 @@ describe('Redis', function() {
                 });
 
                 it('should save to redis', function() {
-                    var obj = {id: 'heisenberg'}, cb = sinon.stub();
+                    var obj = { id: 'heisenberg' }, cb = sinon.stub();
 
                     storageInterface[method].save(obj, cb);
 
@@ -146,7 +151,6 @@ describe('Redis', function() {
             });
 
             describe('remove', function() {
-
                 beforeEach(function() {
                     sinon.spy(JSON, 'stringify');
                 });
@@ -168,9 +172,29 @@ describe('Redis', function() {
                 });
             });
 
+            describe('delete', function() {
+                beforeEach(function() {
+                    sinon.spy(JSON, 'stringify');
+                });
+
+                afterEach(function() {
+                    JSON.stringify.restore();
+                });
+
+                it('should delete from redis', function() {
+                    var id = 'heisenberg', cb = sinon.stub();
+
+                    storageInterface[method].delete(id, cb);
+
+                    redisClientMock.hdel.should.be.calledWith(
+                        defaultNamespace + ':' + method,
+                        ['heisenberg'],
+                        cb
+                    );
+                });
+            });
 
             describe('all', function() {
-
                 beforeEach(function() {
                     sinon.spy(JSON, 'parse');
                 });
@@ -180,8 +204,7 @@ describe('Redis', function() {
                 });
 
                 it('should call callback with error if redis fails', function() {
-                    var cb = sinon.stub(),
-                        err = new Error('OOPS!');
+                    var cb = sinon.stub(), err = new Error('OOPS!');
 
                     redisClientMock.hgetall.yields(err);
 
@@ -193,7 +216,10 @@ describe('Redis', function() {
 
                 it('should return an array by default', function() {
                     var cb = sinon.stub(),
-                        result = ['{"walterwhite":"heisenberg"}', '{"jessepinkman":"capncook"}'];
+                        result = [
+                            '{"walterwhite":"heisenberg"}',
+                            '{"jessepinkman":"capncook"}'
+                        ];
 
                     redisClientMock.hgetall.yields(null, result);
 
@@ -201,36 +227,48 @@ describe('Redis', function() {
 
                     redisClientMock.hgetall.should.be.calledWithMatch(hash);
                     JSON.parse.should.be.calledTwice;
-                    cb.should.be.calledWithMatch(null, [{'walterwhite': 'heisenberg'}, {'jessepinkman': 'capncook'}]);
+                    cb.should.be.calledWithMatch(null, [
+                        { walterwhite: 'heisenberg' },
+                        { jessepinkman: 'capncook' }
+                    ]);
                 });
 
                 it('should return an object if specified in options', function() {
                     var cb = sinon.stub(),
-                        result = {key1: '{"walterwhite":"heisenberg"}', key2: '{"jessepinkman":"capncook"}'};
+                        result = {
+                            key1: '{"walterwhite":"heisenberg"}',
+                            key2: '{"jessepinkman":"capncook"}'
+                        };
 
                     redisClientMock.hgetall.yields(null, result);
 
-                    storageInterface[method].all(cb, {type: 'object'});
+                    storageInterface[method].all(cb, { type: 'object' });
 
                     redisClientMock.hgetall.should.be.calledWithMatch(hash);
                     JSON.parse.should.be.calledTwice;
-                    cb.should.be.calledWithMatch(
-                        null,
-                        {key1: {'walterwhite': 'heisenberg'}, key2: {'jessepinkman': 'capncook'}}
-                    );
+                    cb.should.be.calledWithMatch(null, {
+                        key1: { walterwhite: 'heisenberg' },
+                        key2: { jessepinkman: 'capncook' }
+                    });
                 });
 
                 it('should return an array if something other than object is specified in options', function() {
                     var cb = sinon.stub(),
-                        result = ['{"walterwhite":"heisenberg"}', '{"jessepinkman":"capncook"}'];
+                        result = [
+                            '{"walterwhite":"heisenberg"}',
+                            '{"jessepinkman":"capncook"}'
+                        ];
 
                     redisClientMock.hgetall.yields(null, result);
 
-                    storageInterface[method].all(cb, {type: 'notobject'});
+                    storageInterface[method].all(cb, { type: 'notobject' });
 
                     redisClientMock.hgetall.should.be.calledWithMatch(hash);
                     JSON.parse.should.be.calledTwice;
-                    cb.should.be.calledWithMatch(null, [{'walterwhite': 'heisenberg'}, {'jessepinkman': 'capncook'}]);
+                    cb.should.be.calledWithMatch(null, [
+                        { walterwhite: 'heisenberg' },
+                        { jessepinkman: 'capncook' }
+                    ]);
                 });
             });
         });
